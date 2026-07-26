@@ -17,13 +17,22 @@ import Footer from "@/components/Footer/Footer";
 
 import "./globals.css";
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+  modal: React.ReactNode; // Паралельний слот для модального вікна
+}
+
+export default function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
         <TanStackProvider>
           <Header />
           <main>{children}</main>
+
+          {/* Рендеримо модальне вікно на найвищому рівні додатка */}
+          {modal}
+
           <Footer />
         </TanStackProvider>
       </body>

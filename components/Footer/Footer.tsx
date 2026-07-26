@@ -15,7 +15,9 @@ const Footer = () => {
   return (
     <footer className={css.footer}>
       <div className={css.content}>
-        <p>
+        {/* // === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] === */}
+        {/* Додаємо suppressHydrationWarning, щоб усунути помилку невідповідності дат між сервером та клієнтом */}
+        <p suppressHydrationWarning>
           © {new Date().getFullYear()}{" "}
           <Link href={NOTE_API_INFO_URL} target="_blank" rel="noopener noreferrer">
             NoteHub

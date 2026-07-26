@@ -1,6 +1,7 @@
 // =============================================================
 /* api.ts - Глобальний експорт зовнішніх функцій та типів роботи з API */
 // =============================================================
+// lib/api.ts
 
 import axios from "axios";
 import type { AxiosResponse } from "axios";
@@ -24,6 +25,7 @@ export interface FetchNotesParams {
   page: number;
   perPage: number; // Число має приходити динамічно (передаємо 10)
   search?: string;
+  tag?: string; 
 }
 
 // =============================================
@@ -59,12 +61,24 @@ export async function fetchNotes({
   page,
   perPage,
   search,
+  tag, //-- Додано в ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом
 }: FetchNotesParams): Promise<FetchNotesResponse> {
+
+  //-- Додано в ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом
+  // Перевіряємо значення тегу: якщо користувач обрав 'all', 
+  // сервер не очікує цей тег, тому ми передаємо undefined, щоб повністю виключити його з параметрів запиту.
+  const queryTag = tag === "all" ? undefined : tag;
+
   const response: AxiosResponse<FetchNotesResponse> = await apiClient.get<FetchNotesResponse>(
     "/notes",
     {
       /* Передаємо чисті параметри, які прийшли з Notes.client.tsx та page.tsx */
-      params: { page, perPage, search: search || undefined },
+      params: { 
+        page, 
+        perPage, 
+        search: search || undefined, 
+        //-- Додано в ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом
+        tag: queryTag },
     },
   );
 
