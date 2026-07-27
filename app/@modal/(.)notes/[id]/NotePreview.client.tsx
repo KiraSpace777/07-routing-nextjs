@@ -29,6 +29,8 @@ export default function NotePreviewClient({ noteId }: NotePreviewClientProps) {
   const { data: currentNote, isLoading } = useQuery<Note>({
     queryKey: [NOTE_QUERY_KEY, noteId],
     queryFn: () => fetchNoteById(noteId),
+    // Явно вимикаємо повторне отримання даних при відкритті модального вікна поки відсутня ИД нотатки
+    refetchOnMount: false,
   });
 
   const handleCloseModal = () => {
