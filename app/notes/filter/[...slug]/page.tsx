@@ -53,6 +53,7 @@ export default async function NotesPage({ params, searchParams }: PageProps) {
   await queryClient.prefetchQuery({
     // Додаємо поточний тег у ключ кешу, щоб сервер та клієнт мали ідентичну структуру даних - currentTag
     queryKey: ["notes", currentPage, searchTerm, currentTag],
+
     // Передаємо параметр tag у функцію запиту - tag: currentTag
     queryFn: () =>
       fetchNotes({
@@ -76,3 +77,5 @@ export default async function NotesPage({ params, searchParams }: PageProps) {
     </Suspense>
   );
 }
+
+// ------------
