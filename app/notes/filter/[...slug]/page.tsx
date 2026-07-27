@@ -77,5 +77,3 @@ export default async function NotesPage({ params, searchParams }: PageProps) {
     </Suspense>
   );
 }
-
-// ------------
