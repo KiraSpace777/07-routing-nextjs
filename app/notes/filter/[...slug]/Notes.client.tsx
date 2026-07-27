@@ -4,6 +4,7 @@
 // ==========================================================
 // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
 // "app/notes/Notes.client.tsx" перенесено до "app/notes/filter/[...slug]/notes.client.tsx"
+// У клієнтському компоненті NotesClient потрібно отримати пропс tag та використати його в useQuery.
 
 "use client";
 
@@ -37,22 +38,13 @@ interface NotesClientProps {
 export default function NotesClient({ initialPage, initialSearch, tag }: NotesClientProps) {
   const router = useRouter();
 
-  // Локальні стани сторінки:
-
   // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
-  // Видалено локальні стани currentPage та search.
-  // const [currentPage, setCurrentPage] = useState<number>(initialPage);
-  // const [search, setSearch] = useState<string>(initialSearch);
-
   // Локальний стан для тексту в полі введення користувача
   // Ініціалізується один раз і скидається автоматично через 'key' на рівні page.tsx
   const [searchInputValue, setSearchInputValue] = useState<string>(initialSearch);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
-  // ==========================================================================
-  // ЛОГІКА ЗАТРИМКИ ПОШУКОВОГО ЗАПИТУ ЗА ШАБЛОНОМ DEBOUNCE
-  // ==========================================================================
-
+  // === ЛОГІКА ЗАТРИМКИ ПОШУКОВОГО ЗАПИТУ ЗА ШАБЛОНОМ DEBOUNCE ===
   // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
 
   useEffect(() => {
@@ -60,10 +52,8 @@ export default function NotesClient({ initialPage, initialSearch, tag }: NotesCl
     if (searchInputValue === initialSearch) return;
 
     const debounceTimer = setTimeout(() => {
-      // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
       // Замість оновлення локальних станів, ми програмно оновлюємо URL-адресу додатка,
       // зберігаючи поточний тег фільтрації та скидаючи сторінку на першу.
-
       router.push(`/notes/filter/${tag}?page=1&search=${encodeURIComponent(searchInputValue)}`);
     }, DEBOUNCE_DELAY);
 
@@ -72,8 +62,7 @@ export default function NotesClient({ initialPage, initialSearch, tag }: NotesCl
 
   // Отримання даних через TanStack Query
   // -----------------------------------------------------
-  // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
-  // Запит повністю залежить від серверних пропсів.
+  // Запит залежить від серверних пропсів.
   // Це виключає будь-яке зациклення або повторні запити при рендерині сторінки.
 
   const { data } = useQuery({
@@ -91,7 +80,6 @@ export default function NotesClient({ initialPage, initialSearch, tag }: NotesCl
   // Колбек для зміни сторінки та синхронізації з URL-рядком браузера
   const handlePageChange = useCallback(
     (page: number): void => {
-      // === [HW 7 (NEXT): Паралельні маршрути для фільтрації нотаток за тегом] ===
       // Проводимо навігацію на нову сторінку з обов'язковим збереженням поточного тегу в адресі
       router.push(`/notes/filter/${tag}?page=${page}&search=${encodeURIComponent(initialSearch)}`);
     },

@@ -11,6 +11,7 @@
 // ----------------------------------------------------------
 // ЗМІНИ === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] ===
 // "app/notes/page.tsx" перенесено в "app/notes/filter/[...slug]/page.tsx"
+// У серверному компоненті використовуйте params,в який Next.js в catch-all маршруті автоматично передає значення параметра як масив slug. На основі значення slug отримайте поточний тег фільтрації та використайте його під час виконання prefetch, та передайте пропсом в клієнтський компонент NotesClient
 
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
