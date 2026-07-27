@@ -30,6 +30,7 @@ export default function RootLayout({ children, modal }: RootLayoutProps) {
           <Header />
           <main>{children}</main>
 
+          {/* // === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] === */}
           {/* Рендеримо модальне вікно на найвищому рівні додатка */}
           {modal}
 

@@ -1,8 +1,9 @@
+/* === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] === */
+
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import css from "./home/Home.module.css";
 
 function NotFound() {
   const router = useRouter();

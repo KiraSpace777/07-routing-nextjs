@@ -3,6 +3,8 @@
 // Клієнтський компонент NotePreviewClient
 // Реалізація функціоналу картки з обгорткою в компонент Modal
 // ==========================================================
+// === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] ===
+
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +24,7 @@ interface NotePreviewClientProps {
 export default function NotePreviewClient({ noteId }: NotePreviewClientProps) {
   const router = useRouter();
 
-  // Використовуємо строго той самий ключ і функцію, що й серверний prefetch
+  // Використовуємо той самий ключ і функцію, що й серверний prefetch
   // Це миттєво візьме дані з кешу без помилки 400 та без повторного запиту!
   const { data: currentNote, isLoading } = useQuery<Note>({
     queryKey: [NOTE_QUERY_KEY, noteId],

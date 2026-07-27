@@ -10,6 +10,7 @@ import css from "./SidebarNotes.module.css";
 const TAGS = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
 export default function DefaultSidebarNotes() {
+  // === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] ===
   // У дефолтному стані жоден динамічний тег не вибрано, тому активним є "All notes"
   return (
     <div className={css.menuList}>
