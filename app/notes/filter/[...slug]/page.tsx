@@ -14,12 +14,13 @@
 // У серверному компоненті використовуйте params,в який Next.js в catch-all маршруті автоматично передає значення параметра як масив slug. На основі значення slug отримайте поточний тег фільтрації та використайте його під час виконання prefetch, та передайте пропсом в клієнтський компонент NotesClient
 
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import { fetchNotes } from "@/lib/api";
+import { fetchNotes, FetchNotesResponse } from "@/lib/api";
 
 import NotesClient from "@/app/notes/filter/[...slug]/Notes.client";
 
 import { Suspense } from "react";
 import Loading from "@/app/loading";
+import NotFound from "@/app/not-found";
 
 // === [ГЛОБАЛЬНІ КОНСТАНТИ НА ПОЧАТКУ ФАЙЛУ] ===
 const DEFAULT_PER_PAGE = 10;
@@ -51,19 +52,38 @@ export default async function NotesPage({ params, searchParams }: PageProps) {
 
   // === [ДЗ 7: Паралельні маршрути для фільтрації нотаток за тегом] ===
   /* Серверне попереднє завантаження кешу даних (Prefetch) перед рендерингом сторінки */
-  await queryClient.prefetchQuery({
-    // Додаємо поточний тег у ключ кешу, щоб сервер та клієнт мали ідентичну структуру даних - currentTag
-    queryKey: ["notes", currentPage, searchTerm, currentTag],
+  // Щоб змусити код дойти до функції notFound(), нам потрібно обернути prefetchQuery у
+  // простий блок try...catch. Якщо зловимо помилку 400 від сервера (Bad Request) —
+  // ми відразу викликаємо вашу помилку.
 
-    // Передаємо параметр tag у функцію запиту - tag: currentTag
-    queryFn: () =>
-      fetchNotes({
-        page: currentPage,
-        perPage: DEFAULT_PER_PAGE,
-        search: searchTerm,
-        tag: currentTag,
-      }),
-  });
+  const queryKey = ["notes", currentPage, searchTerm, currentTag];
+
+  try {
+    await queryClient.prefetchQuery({
+      // Додаємо поточний тег у ключ кешу, щоб сервер та клієнт мали ідентичну структуру даних - currentTag
+      queryKey: queryKey,
+      // Передаємо параметр tag у функцію запиту - tag: currentTag
+      queryFn: () =>
+        fetchNotes({
+          page: currentPage,
+          perPage: DEFAULT_PER_PAGE,
+          search: searchTerm,
+          tag: currentTag,
+        }),
+    });
+
+    // Додаткова перевірка на випадок, якщо сервер повернув 200, але масив порожній
+    const fetchedData = queryClient.getQueryData<FetchNotesResponse>(queryKey);
+    if (!fetchedData || fetchedData.notes.length === 0) {
+      NotFound();
+    }
+  } catch (error) {
+    // Виводимо технічний текст помилки в термінал для додаткової інформації
+    console.error("Fetch notes failed:", error);
+
+    // Примусово викликаємо ваш 404
+    NotFound();
+  }
 
   return (
     <Suspense fallback={<Loading />}>

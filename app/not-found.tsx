@@ -5,7 +5,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-function NotFound() {
+export default function NotFound() {
   const router = useRouter();
 
   useEffect(() => {
@@ -25,5 +25,3 @@ function NotFound() {
     </>
   );
 }
-
-export default NotFound;

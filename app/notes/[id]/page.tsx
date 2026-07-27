@@ -17,6 +17,9 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 import { fetchNoteById } from "@/lib/api";
 import NoteDetailsClient from "./NoteDetails.client";
 
+// Імпортуємо інструмент 404, Вбудована функція Next.js (з маленької літери)
+import { notFound } from "next/navigation";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -27,11 +30,19 @@ export default async function NoteDetailsPage({ params }: PageProps) {
 
   const queryClient = new QueryClient();
 
-  /* Попереднє завантаження деталей однієї конкретної нотатки на сервері */
-  await queryClient.prefetchQuery({
-    queryKey: ["note", id],
-    queryFn: () => fetchNoteById(id),
-  });
+  try {
+    /* Серверне завантаження деталей однієї конкретної нотатки за допомогою fetchQuery */
+    await queryClient.fetchQuery({
+      queryKey: ["note", id],
+      queryFn: () => fetchNoteById(id),
+    });
+  } catch (error) {
+    // Виводимо технічний текст помилки в термінал для додаткової інформації
+    console.error("Fetch notes details failed:", error);
+    // Викликаємо саме системну функцію-команду Next.js з маленької літери.
+    // Вона зупинить завантаження і передасть керування у ваш error.tsx, де вже увімкнеться ваш <NotFound />
+    notFound();
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

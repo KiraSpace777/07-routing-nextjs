@@ -43,6 +43,9 @@ export default function NoteDetailsClient() {
     queryKey: ["note", id],
     queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
+    // хук запуститься ТІЛЬКИ тоді, коли id реально існує, заблокує дублюючі
+    //  фонові запити до того, як розгорнеться useParams().
+    enabled: Boolean(id),
   });
 
   /* Рендер стану очікування завантаження за специфікацією ТЗ */
