@@ -15,7 +15,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
 
-import NotesClient from "./Notes.client";
+import NotesClient from "@/app/notes/filter/[...slug]/Notes.client";
 
 import { Suspense } from "react";
 import Loading from "@/app/loading";
